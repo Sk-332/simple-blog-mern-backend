@@ -12,10 +12,10 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: "https://simple-blog-mern-frontend-6ukovcstk.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: true,
   credentials: true
 }));
+
 
 app.use("/api/blogs", blogRoutes);
 
