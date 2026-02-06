@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: "https://simple-blog-mern-frontend.vercel.app",
+  origin: "https://simple-blog-mern-frontend-6ukovcstk.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
