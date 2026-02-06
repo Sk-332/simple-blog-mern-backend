@@ -1,36 +1,34 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-require ("dotenv").config();
+require("dotenv").config();
 
 const connectDB = require("./config/db");
-//import routes
 const blogRoutes = require("./routes/blogRoutes");
 
 const app = express();
 
-//middlewares
+// middlewares
 app.use(express.json());
+
 app.use(cors({
-  origin: "*",
+  origin: "https://simple-blog-mern-frontend.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 
 app.use("/api/blogs", blogRoutes);
 
-//connect db
+// connect db
 connectDB();
 
-//server testing route
-app.get("/", (req, res)=>{
-    res.send("Simple blog backend is running");
+// test route
+app.get("/", (req, res) => {
+  res.send("Simple blog backend is running");
 });
 
-//Server
+// server
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
