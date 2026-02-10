@@ -1,30 +1,22 @@
-const connectDB = require("../../config/db");
-const Blog = require("../../models/Blog");
+import connectDB from "../../../config/db";
+import Blog from "../../../models/Blog";
 
-module.exports = async (req, res) => {
-  await connectDB();
+connectDB();
 
+export default async function handler(req, res) {
   if (req.method === "GET") {
-    try {
-      const blogs = await Blog.find().sort({ createdAt: -1 });
-      return res.status(200).json(blogs);
-    } catch (err) {
-      return res.status(500).json({ message: err.message });
-    }
+    const blogs = await Blog.find().sort({ createdAt: -1 });
+    return res.status(200).json(blogs);
   }
 
   if (req.method === "POST") {
-    try {
-      const { title, content } = req.body;
-      if (!title || !content) {
-        return res.status(400).json({ message: "Title and content are required" });
-      }
-      const blog = await Blog.create({ title, content });
-      return res.status(201).json(blog);
-    } catch (err) {
-      return res.status(500).json({ message: err.message });
-    }
+    const { title, content } = req.body;
+    if (!title || !content)
+      return res.status(400).json({ message: "Title and content are required" });
+
+    const newBlog = await Blog.create({ title, content });
+    return res.status(201).json(newBlog);
   }
 
-  res.status(405).json({ message: "Method not allowed" });
-};
+  return res.status(405).json({ message: "Method not allowed" });
+}

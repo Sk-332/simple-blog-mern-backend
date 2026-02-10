@@ -1,8 +1,9 @@
-const connectDB = require("../../config/db");
-const Blog = require("../../models/Blog");
+import connectDB from "../../../config/db";
+import Blog from "../../../models/Blog";
 
-module.exports = async (req, res) => {
-  await connectDB();
+connectDB();
+
+export default async function handler(req, res) {
   const { id } = req.query;
 
   if (req.method === "GET") {
@@ -13,20 +14,16 @@ module.exports = async (req, res) => {
 
   if (req.method === "PUT") {
     const { title, content } = req.body;
-    const blog = await Blog.findByIdAndUpdate(
-      id,
-      { title, content },
-      { new: true }
-    );
-    if (!blog) return res.status(404).json({ message: "Blog not found" });
-    return res.status(200).json(blog);
+    const updatedBlog = await Blog.findByIdAndUpdate(id, { title, content }, { new: true });
+    if (!updatedBlog) return res.status(404).json({ message: "Blog not found" });
+    return res.status(200).json(updatedBlog);
   }
 
   if (req.method === "DELETE") {
-    const blog = await Blog.findByIdAndDelete(id);
-    if (!blog) return res.status(404).json({ message: "Blog not found" });
-    return res.status(200).json({ message: "Blog deleted" });
+    const deletedBlog = await Blog.findByIdAndDelete(id);
+    if (!deletedBlog) return res.status(404).json({ message: "Blog not found" });
+    return res.status(200).json({ message: "Blog deleted successfully" });
   }
 
-  res.status(405).json({ message: "Method not allowed" });
-};
+  return res.status(405).json({ message: "Method not allowed" });
+}
