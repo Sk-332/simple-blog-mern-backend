@@ -2,6 +2,16 @@ const connectDB = require("../../config/db");
 const Blog = require("../../models/Blog");
 
 module.exports = async function handler(req, res) {
+  //  Cors Headers top
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Handle Preflight request
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   try {
     await connectDB();
 
@@ -14,7 +24,9 @@ module.exports = async function handler(req, res) {
       const { title, content } = req.body;
 
       if (!title || !content) {
-        return res.status(400).json({ message: "Title and content are required" });
+        return res
+          .status(400)
+          .json({ message: "Title and content are required" });
       }
 
       const newBlog = await Blog.create({ title, content });

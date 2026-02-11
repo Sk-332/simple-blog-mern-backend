@@ -2,33 +2,51 @@ const connectDB = require("../../config/db");
 const Blog = require("../../models/Blog");
 
 module.exports = async function handler(req, res) {
+  // Cors Headers Top
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Handle Preflight request
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   try {
     await connectDB();
     const { id } = req.query;
 
     if (req.method === "GET") {
       const blog = await Blog.findById(id);
-      if (!blog) return res.status(404).json({ message: "Blog not found" });
+      if (!blog)
+        return res.status(404).json({ message: "Blog not found" });
       return res.status(200).json(blog);
     }
 
     if (req.method === "PUT") {
       const { title, content } = req.body;
+
       const updatedBlog = await Blog.findByIdAndUpdate(
         id,
         { title, content },
         { new: true }
       );
+
       if (!updatedBlog)
         return res.status(404).json({ message: "Blog not found" });
+
       return res.status(200).json(updatedBlog);
     }
 
     if (req.method === "DELETE") {
       const deletedBlog = await Blog.findByIdAndDelete(id);
+
       if (!deletedBlog)
         return res.status(404).json({ message: "Blog not found" });
-      return res.status(200).json({ message: "Blog deleted successfully" });
+
+      return res
+        .status(200)
+        .json({ message: "Blog deleted successfully" });
     }
 
     return res.status(405).json({ message: "Method not allowed" });
